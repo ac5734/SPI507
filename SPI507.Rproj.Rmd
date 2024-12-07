@@ -4,26 +4,95 @@ output: html_document
 date: "2024-12-06"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+Data Cleaning and Visualization
+```{r}
+#Load necessary libraries
+library(readxl)
+library(estimatr)
+library(tidyverse)
+library(car)
+Data <- read_excel("data/district_data.xlsx")
+
+#File for saving output
+#sink("output/analysis.text")
+
+# Description of Data
+# state_id -- state id
+#    1: Colorado
+#    2: Connecticut
+#    3: Massachusetts
+#    4: Minnesota
+#    5: Mississippi
+#    6: Ohio
+#    7: Rhode island
+#    8: Virginia
+#    9: Wisconsin
+#    10: West Virginia
+#    11: Wyoming
+# county_fips  -- county fips
+# commute_zone  -- commuting zone id
+# pass_math_2019 -- percent of students passing math in 2019
+# pass_ela_2019 -- percent of students passing ela in 2019
+# pass_math_2021 -- percent of students passing math in 2021
+# pass_ela_2021 -- percent of students passing ela in 2021
+# participation_ela_2019 -- participation rate in 2019 for ela test
+# participation_math_2019 -- participation rate in 2019 for math test
+# participation_ela_2021 -- participation rate in 2021 for ela test
+# participation_math_2021 -- participation rate in 2021 for math test
+# share_black -- student share: black 
+# share_hisp -- student share: hispanic
+# share_white -- student share: white
+# share_other -- student share: other
+# share_lunch -- share of students on free or reduced lunch
+# share_ell -- share of students who are english language learners
+# share_inperson -- share of students in person in 2021
+# share_virtual -- share of students with virtual learning in 2021
+# share_hybrid -- share of students with hybrid learning in 2021
+###########
+
+#Check to make sure data loaded correctly
+head(Data)
+summary(Data)
+
+## Cleaning the data to make sure total share of students = 1 ##
+
+# Check sum of proportions to ensure data was entered correctly
+data <- data %>% 
+  mutate(total_share = share_inperson + share_virtual + share_hybrid)
+
+#Check for rows where total does not equal 1, allowing a small numerical tolerance for floating point errors
+incorrect_rows <- data %>% 
+  filter(abs(total_share != 1) > 1e-6)
+
+#Count and inspect rows with errors
+n_incorrect <- nrow(incorrect_rows)
+print(paste("Number of rows with errors: ", n_incorrect))
+
+#Normalizing data (avenue to take if errors are small)
+data <- data %>%
+  mutate(across(c(share_inperson, share_virtual, share_hybrid), 
+                ~ . / total_share)) %>%
+  mutate(total_share = share_inperson + share_virtual + share_hybrid)  # Recheck totals
+
+view(data)
+incorrect_rows <- data %>% 
+  filter(abs(total_share != 1) > 1e-6)
+n_incorrect <- nrow(incorrect_rows)
+print(paste("Number of rows with errors: ", n_incorrect))
+view(incorrect_rows)
+
+#Check missing values
+colSums(is.na(Data))
+
+#Visualize what is missing
+library(ggplot2)
+library(naniar)
+vis_miss(Data)
+
+#Check for patterns in what is missing
+md.pattern(Data)
+
+
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
