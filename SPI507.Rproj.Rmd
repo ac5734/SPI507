@@ -81,6 +81,8 @@ n_incorrect <- nrow(incorrect_rows)
 print(paste("Number of rows with errors: ", n_incorrect))
 view(incorrect_rows)
 
+## Cleaning data to identify any correlation between missing values and other characteristics that could bias dataset ##
+
 #Check missing values
 colSums(is.na(Data))
 
@@ -91,6 +93,53 @@ vis_miss(Data)
 
 #Check for patterns in what is missing
 md.pattern(Data)
+
+# Summarize the proportion of missing values for each variable
+missing_summary <- data %>%
+  summarise(across(everything(), ~ sum(is.na(.)) / n()))
+print(missing_summary)
+
+# Create a missing indicator for the key variable (e.g., `share_lunch`)
+data <- data %>%
+  mutate(is_missing_share_lunch = is.na(share_lunch))
+
+data <- data %>%
+  mutate(is_missing_share_ell = is.na(share_ell))
+
+# Create variable for pass rate in 2021 (combo of math and english)
+data <- data %>%
+  mutate(pass_rate_2021 = (pass_math_2021 + pass_ela_2021) /2)
+
+#Create variable for pass rate in 2019
+data <- data %>%
+  mutate(pass_rate_2019 = (pass_math_2019 + pass_ela_2019) /2)
+
+#Create variable for average pass rate
+data <- data %>%
+  mutate(avg_pass_rate = (pass_rate_2021 + pass_rate_2019) /2)
+
+# Compare distributions of other variables (e.g., test pass rates, district type) for missing vs non-missing rows
+summary_comparison <- data %>%
+  group_by(is_missing_share_lunch) %>%
+  summarise(
+    avg_pass_rate = mean(avg_pass_rate, na.rm = TRUE),
+    avg_share_inperson = mean(share_inperson, na.rm = TRUE),
+    avg_share_black = mean(share_black, na.rm = TRUE),
+    avg_share_hisp = mean(share_hisp, na.rm = TRUE),
+    count = n()
+  )
+print(summary_comparison)
+
+summary_comparison <- data %>%
+  group_by(is_missing_share_ell) %>%
+  summarise(
+    avg_pass_rate = mean(avg_pass_rate, na.rm = TRUE),
+    avg_share_inperson = mean(share_inperson, na.rm = TRUE),
+    avg_share_black = mean(share_black, na.rm = TRUE),
+    avg_share_hisp = mean(share_hisp, na.rm = TRUE),
+    count = n()
+  )
+print(summary_comparison)
 
 
 ```
