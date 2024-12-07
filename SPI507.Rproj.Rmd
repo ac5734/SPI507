@@ -141,6 +141,15 @@ summary_comparison <- data %>%
   )
 print(summary_comparison)
 
+#Check if differences are statistically significant
+# Example: T-test for test pass rates between missing and non-missing groups
+t_test_result <- t.test(avg_pass_rate ~ is_missing_share_lunch, data = data)
+print(t_test_result)
+
+t_test_result <- t.test(avg_pass_rate ~ is_missing_share_ell, data = data)
+print(t_test_result)
+
+
 
 ```
 
