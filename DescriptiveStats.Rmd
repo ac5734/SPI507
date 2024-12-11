@@ -4,26 +4,47 @@ output: html_document
 date: "2024-12-11"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+#Load necessary libraries
+library(readxl)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+data <- read_excel("data/district_data.xlsx")
+
+summary_stats <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    "Districts" = n_distinct(district_id),
+    "% in-person" = round(mean(share_inperson, na.rm = TRUE) * 100, 1),
+    "% hybrid" = round(mean(share_hybrid, na.rm = TRUE) * 100, 1),
+    "% virtual" = round(mean(share_virtual, na.rm = TRUE) * 100, 1),
+    "% Black or Hispanic" = round(mean(share_black + share_hisp, na.rm = TRUE) * 100, 1),
+    "% FRPL" = round(mean(share_lunch, na.rm = TRUE) * 100, 1),
+    "% ELL" = round(mean(share_ELL, na.rm = TRUE) * 100, 1),
+  ) %>%
+rename(State = state_id) %>%
+
+mutate(State = case_when(
+    State == 1 ~ "CO",
+    State == 2 ~ "CT",
+    State == 3 ~ "MA",
+    State == 4 ~ "MN",
+    State == 5 ~ "MS",
+    State == 6 ~ "OH",
+    State == 7 ~ "RI",
+    State == 8 ~ "VA",
+    State == 9 ~ "WI",
+    State == 10 ~ "WV",
+    State == 11 ~ "WY",
+  )) %>%
+  
+select(State, everything()) %>%
+  arrange(State)
+
+
+# View the summary statistics
+print(summary_stats)
+
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
