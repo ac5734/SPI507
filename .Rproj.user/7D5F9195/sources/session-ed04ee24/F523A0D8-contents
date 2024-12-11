@@ -1,0 +1,130 @@
+---
+title: "main_regression"
+author: "Nadia Avianti"
+date: "2024-12-10"
+output: pdf_document
+---
+
+# Set up
+```{r}
+# Import library
+library(tidyverse)
+library(readxl)
+library(estimatr)
+library(modelsummary)
+
+# Import data
+setwd("C:/Users/nadia/OneDrive/Documents/GitHub/SPI507")
+data <- read_excel("District_Data.xlsx")
+```
+
+# Prep data
+```{r}
+# Calculate diff
+data$pass_math_diff <- data$pass_math_2021 - data$pass_math_2019
+data$pass_ela_diff <- data$pass_ela_2021 - data$pass_ela_2019
+data$pass_avg_diff <- (data$pass_math_diff + data$pass_ela_diff)/2
+
+# Interaction variables
+demographics <- c("black", "hisp", "white", "other", "lunch", "ell")
+
+for (demographic in demographics) {
+  str_demo <- 
+  data[[paste0("int_virtual_", demographic)]] <- data$share_virtual * data[[paste0("share_", demographic)]]
+  data[[paste0("int_hybrid_", demographic)]] <- data$share_hybrid * data[[paste0("share_", demographic)]]
+}
+```
+
+
+# Run models
+```{r}
+
+# Create list to store results
+results <- list()
+
+# Run regressions
+subjects <- c("math", "ela", "avg")
+for (subject in subjects) {
+  # Set model name
+  name_reg1 <- paste0(subject, "_reg1")
+  name_reg2 <- paste0(subject, "_reg2")
+  name_reg3 <- paste0(subject, "_reg3")
+  
+  dep_var <- paste0("pass_", subject, "_diff")
+  
+  # Controlling state_id
+  results[[name_reg1]] <- lm_robust(data[[dep_var]] ~ share_virtual + share_hybrid 
+                                    + state_id 
+                                    + int_virtual_black + int_hybrid_black 
+                                    + int_virtual_hisp + int_hybrid_hisp 
+                                    + int_virtual_lunch + int_hybrid_lunch
+                                    , data = data, se_type = "stata")
+
+  # Controlling state_id + county_fips
+  results[[name_reg2]] <- lm_robust(data[[dep_var]] ~ share_virtual + share_hybrid 
+                                    + state_id + county_fips
+                                    + int_virtual_black + int_hybrid_black 
+                                    + int_virtual_hisp + int_hybrid_hisp 
+                                    + int_virtual_lunch + int_hybrid_lunch
+                                    , data = data, se_type = "stata")
+
+  # Controlling state_id + commute_zone
+  results[[name_reg3]] <- lm_robust(data[[dep_var]] ~ share_virtual + share_hybrid 
+                                    + state_id + commute_zone
+                                    + int_virtual_black + int_hybrid_black 
+                                    + int_virtual_hisp + int_hybrid_hisp 
+                                    + int_virtual_lunch + int_hybrid_lunch
+                                    , data = data, se_type = "stata")  
+}
+
+
+```
+
+# Export results
+```{r}
+# Create list
+models <- list(
+  "(1)" = results[["math_reg1"]],
+  "(2)" = results[["math_reg2"]],
+  "(3)" = results[["math_reg3"]],
+  "(4)" = results[["ela_reg1"]],
+  "(5)" = results[["ela_reg2"]],
+  "(6)" = results[["ela_reg3"]],
+  "(7)" = results[["avg_reg1"]],
+  "(8)" = results[["avg_reg2"]],
+  "(9)" = results[["avg_reg3"]]
+)
+
+# Rename coefficient labels
+renamed_labels <- c(
+  "share_virtual" = "% virtual",
+  "share_hybrid" = "% hybrid",
+  "int_virtual_black" = "% Black x % virtual",
+  "int_hybrid_black" = "% Black x % hybrid",
+  "int_virtual_hisp" = "% Hispanic x % virtual",
+  "int_hybrid_hisp" = "% Hispanic x % hybrid",
+  "int_virtual_lunch" = "% Lunch x % virtual",
+  "int_hybrid_lunch" = "% Lunch x % hybrid"
+)
+
+# Extra rows
+extra_rows <- tribble(
+  ~name, ~`(1)`, ~`(2)`, ~`(3)`, ~`(4)`, ~`(5)`, ~`(6)`, ~`(7)`, ~`(8)`, ~`(9)`,
+  "Control: State", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes", "Yes",
+  "Control: County", "No", "Yes", "No", "No", "Yes", "No", "No", "Yes", "No",
+  "Control: Commuting Zone", "No", "No", "Yes", "No", "No", "Yes", "No", "No", "Yes"
+)
+
+# Export table
+modelsummary(models,
+             coef_map = renamed_labels,
+             statistic = "std.error",
+             stars = TRUE,
+             add_rows = extra_rows,
+             output = "main_regressions.rtf",
+             fmt = 3,
+             gof_map = c("nobs", "r.squared")
+)
+```
+
+

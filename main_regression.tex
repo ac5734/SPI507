@@ -1,0 +1,297 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={main\_regression},
+  pdfauthor={Nadia Avianti},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{main\_regression}
+\author{Nadia Avianti}
+\date{2024-12-10}
+
+\begin{document}
+\maketitle
+
+\section{Set up}\label{set-up}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Import library}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.5
+## v forcats   1.0.0     v stringr   1.5.1
+## v ggplot2   3.5.1     v tibble    3.2.1
+## v lubridate 1.9.3     v tidyr     1.3.1
+## v purrr     1.0.2     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(readxl)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'readxl' was built under R version 4.4.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(estimatr)}
+\FunctionTok{library}\NormalTok{(modelsummary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'modelsummary' was built under R version 4.4.2
+\end{verbatim}
+
+\begin{verbatim}
+## `modelsummary` 2.0.0 now uses `tinytable` as its default table-drawing
+##   backend. Learn more at: https://vincentarelbundock.github.io/tinytable/
+## 
+## Revert to `kableExtra` for one session:
+## 
+##   options(modelsummary_factory_default = 'kableExtra')
+##   options(modelsummary_factory_latex = 'kableExtra')
+##   options(modelsummary_factory_html = 'kableExtra')
+## 
+## Silence this message forever:
+## 
+##   config_modelsummary(startup_message = FALSE)
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Import data}
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/Users/nadia/OneDrive/Documents/GitHub/SPI507"}\NormalTok{)}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"District\_Data.xlsx"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Prep data}\label{prep-data}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Calculate diff}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{pass\_math\_diff }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{pass\_math\_2021 }\SpecialCharTok{{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{pass\_math\_2019}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{pass\_ela\_diff }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{pass\_ela\_2021 }\SpecialCharTok{{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{pass\_ela\_2019}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{pass\_avg\_diff }\OtherTok{\textless{}{-}}\NormalTok{ (data}\SpecialCharTok{$}\NormalTok{pass\_math\_diff }\SpecialCharTok{+}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{pass\_ela\_diff)}\SpecialCharTok{/}\DecValTok{2}
+
+\CommentTok{\# Interaction variables}
+\NormalTok{demographics }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"black"}\NormalTok{, }\StringTok{"hisp"}\NormalTok{, }\StringTok{"white"}\NormalTok{, }\StringTok{"other"}\NormalTok{, }\StringTok{"lunch"}\NormalTok{, }\StringTok{"ell"}\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ (demographic }\ControlFlowTok{in}\NormalTok{ demographics) \{}
+\NormalTok{  str\_demo }\OtherTok{\textless{}{-}} 
+\NormalTok{  data[[}\FunctionTok{paste0}\NormalTok{(}\StringTok{"int\_virtual\_"}\NormalTok{, demographic)]] }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{share\_virtual }\SpecialCharTok{*}\NormalTok{ data[[}\FunctionTok{paste0}\NormalTok{(}\StringTok{"share\_"}\NormalTok{, demographic)]]}
+\NormalTok{  data[[}\FunctionTok{paste0}\NormalTok{(}\StringTok{"int\_hybrid\_"}\NormalTok{, demographic)]] }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{share\_hybrid }\SpecialCharTok{*}\NormalTok{ data[[}\FunctionTok{paste0}\NormalTok{(}\StringTok{"share\_"}\NormalTok{, demographic)]]}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Run models}\label{run-models}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create list to store results}
+\NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{()}
+
+\CommentTok{\# Run regressions}
+\NormalTok{subjects }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"math"}\NormalTok{, }\StringTok{"ela"}\NormalTok{, }\StringTok{"avg"}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ (subject }\ControlFlowTok{in}\NormalTok{ subjects) \{}
+  \CommentTok{\# Set model name}
+\NormalTok{  name\_reg1 }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(subject, }\StringTok{"\_reg1"}\NormalTok{)}
+\NormalTok{  name\_reg2 }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(subject, }\StringTok{"\_reg2"}\NormalTok{)}
+\NormalTok{  name\_reg3 }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(subject, }\StringTok{"\_reg3"}\NormalTok{)}
+  
+\NormalTok{  dep\_var }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"pass\_"}\NormalTok{, subject, }\StringTok{"\_diff"}\NormalTok{)}
+  
+  \CommentTok{\# Controlling state\_id}
+\NormalTok{  results[[name\_reg1]] }\OtherTok{\textless{}{-}} \FunctionTok{lm\_robust}\NormalTok{(data[[dep\_var]] }\SpecialCharTok{\textasciitilde{}}\NormalTok{ share\_virtual }\SpecialCharTok{+}\NormalTok{ share\_hybrid }
+                                    \SpecialCharTok{+}\NormalTok{ state\_id }
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_black }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_black }
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_hisp }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_hisp }
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_lunch }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_lunch}
+\NormalTok{                                    , }\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{se\_type =} \StringTok{"stata"}\NormalTok{)}
+
+  \CommentTok{\# Controlling state\_id + county\_fips}
+\NormalTok{  results[[name\_reg2]] }\OtherTok{\textless{}{-}} \FunctionTok{lm\_robust}\NormalTok{(data[[dep\_var]] }\SpecialCharTok{\textasciitilde{}}\NormalTok{ share\_virtual }\SpecialCharTok{+}\NormalTok{ share\_hybrid }
+                                    \SpecialCharTok{+}\NormalTok{ state\_id }\SpecialCharTok{+}\NormalTok{ county\_fips}
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_black }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_black }
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_hisp }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_hisp }
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_lunch }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_lunch}
+\NormalTok{                                    , }\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{se\_type =} \StringTok{"stata"}\NormalTok{)}
+
+  \CommentTok{\# Controlling state\_id + commute\_zone}
+\NormalTok{  results[[name\_reg3]] }\OtherTok{\textless{}{-}} \FunctionTok{lm\_robust}\NormalTok{(data[[dep\_var]] }\SpecialCharTok{\textasciitilde{}}\NormalTok{ share\_virtual }\SpecialCharTok{+}\NormalTok{ share\_hybrid }
+                                    \SpecialCharTok{+}\NormalTok{ state\_id }\SpecialCharTok{+}\NormalTok{ commute\_zone}
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_black }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_black }
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_hisp }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_hisp }
+                                    \SpecialCharTok{+}\NormalTok{ int\_virtual\_lunch }\SpecialCharTok{+}\NormalTok{ int\_hybrid\_lunch}
+\NormalTok{                                    , }\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{se\_type =} \StringTok{"stata"}\NormalTok{)  }
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Export results}\label{export-results}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create list}
+\NormalTok{models }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+  \StringTok{"(1)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"math\_reg1"}\NormalTok{]],}
+  \StringTok{"(2)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"math\_reg2"}\NormalTok{]],}
+  \StringTok{"(3)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"math\_reg3"}\NormalTok{]],}
+  \StringTok{"(4)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"ela\_reg1"}\NormalTok{]],}
+  \StringTok{"(5)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"ela\_reg2"}\NormalTok{]],}
+  \StringTok{"(6)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"ela\_reg3"}\NormalTok{]],}
+  \StringTok{"(7)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"avg\_reg1"}\NormalTok{]],}
+  \StringTok{"(8)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"avg\_reg2"}\NormalTok{]],}
+  \StringTok{"(9)"} \OtherTok{=}\NormalTok{ results[[}\StringTok{"avg\_reg3"}\NormalTok{]]}
+\NormalTok{)}
+
+\CommentTok{\# Rename coefficient labels}
+\NormalTok{renamed\_labels }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"share\_virtual"} \OtherTok{=} \StringTok{"\% virtual"}\NormalTok{,}
+  \StringTok{"share\_hybrid"} \OtherTok{=} \StringTok{"\% hybrid"}\NormalTok{,}
+  \StringTok{"int\_virtual\_black"} \OtherTok{=} \StringTok{"\% Black x \% virtual"}\NormalTok{,}
+  \StringTok{"int\_hybrid\_black"} \OtherTok{=} \StringTok{"\% Black x \% hybrid"}\NormalTok{,}
+  \StringTok{"int\_virtual\_hisp"} \OtherTok{=} \StringTok{"\% Hispanic x \% virtual"}\NormalTok{,}
+  \StringTok{"int\_hybrid\_hisp"} \OtherTok{=} \StringTok{"\% Hispanic x \% hybrid"}\NormalTok{,}
+  \StringTok{"int\_virtual\_lunch"} \OtherTok{=} \StringTok{"\% Lunch x \% virtual"}\NormalTok{,}
+  \StringTok{"int\_hybrid\_lunch"} \OtherTok{=} \StringTok{"\% Lunch x \% hybrid"}
+\NormalTok{)}
+
+\CommentTok{\# Extra rows}
+\NormalTok{extra\_rows }\OtherTok{\textless{}{-}} \FunctionTok{tribble}\NormalTok{(}
+  \SpecialCharTok{\textasciitilde{}}\NormalTok{name, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(1)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(2)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(3)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(4)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(5)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(6)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(7)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(8)}\StringTok{\textasciigrave{}}\NormalTok{, }\SpecialCharTok{\textasciitilde{}}\StringTok{\textasciigrave{}}\AttributeTok{(9)}\StringTok{\textasciigrave{}}\NormalTok{,}
+  \StringTok{"Control: State"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{,}
+  \StringTok{"Control: County"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{,}
+  \StringTok{"Control: Commuting Zone"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"No"}\NormalTok{, }\StringTok{"Yes"}
+\NormalTok{)}
+
+\CommentTok{\# Export table}
+\FunctionTok{modelsummary}\NormalTok{(models,}
+             \AttributeTok{coef\_map =}\NormalTok{ renamed\_labels,}
+             \AttributeTok{statistic =} \StringTok{"std.error"}\NormalTok{,}
+             \AttributeTok{stars =} \ConstantTok{TRUE}\NormalTok{,}
+             \AttributeTok{add\_rows =}\NormalTok{ extra\_rows,}
+             \AttributeTok{output =} \StringTok{"main\_regressions.rtf"}\NormalTok{,}
+             \AttributeTok{fmt =} \DecValTok{3}\NormalTok{,}
+             \AttributeTok{gof\_map =} \FunctionTok{c}\NormalTok{(}\StringTok{"nobs"}\NormalTok{, }\StringTok{"r.squared"}\NormalTok{)}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}
