@@ -1,0 +1,380 @@
+---
+title: "DescriptiveStats"
+output: html_document
+date: "2024-12-11"
+---
+
+Summary Statistics Table
+```{r}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(gt)
+
+# Read the data
+data <- read_excel("data/district_data.xlsx")
+
+# Create the summary stats table for each state
+summary_stats <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    "Districts" = n_distinct(district_id),
+    "% in-person" = round(mean(share_inperson, na.rm = TRUE) * 100, 1),
+    "% hybrid" = round(mean(share_hybrid, na.rm = TRUE) * 100, 1),
+    "% virtual" = round(mean(share_virtual, na.rm = TRUE) * 100, 1),
+    "% Black or Hispanic" = round(mean(share_black + share_hisp, na.rm = TRUE) * 100, 1),
+    "% FRPL" = round(mean(share_lunch, na.rm = TRUE) * 100, 1),
+    "% ELL" = round(mean(share_ELL, na.rm = TRUE) * 100, 1)
+  ) %>%
+  rename(State = state_id) %>%
+  mutate(State = case_when(
+    State == 1 ~ "CO",
+    State == 2 ~ "CT",
+    State == 3 ~ "MA",
+    State == 4 ~ "MN",
+    State == 5 ~ "MS",
+    State == 6 ~ "OH",
+    State == 7 ~ "RI",
+    State == 8 ~ "VA",
+    State == 9 ~ "WI",
+    State == 10 ~ "WV",
+    State == 11 ~ "WY"
+  )) %>%
+  select(State, everything()) %>%
+  arrange(State)
+
+# Add overall statistics as an additional row
+overall_stats <- data %>%
+  summarise(
+    "Districts" = n_distinct(district_id),
+    "% in-person" = round(mean(share_inperson, na.rm = TRUE) * 100, 1),
+    "% hybrid" = round(mean(share_hybrid, na.rm = TRUE) * 100, 1),
+    "% virtual" = round(mean(share_virtual, na.rm = TRUE) * 100, 1),
+    "% Black or Hispanic" = round(mean(share_black + share_hisp, na.rm = TRUE) * 100, 1),
+    "% FRPL" = round(mean(share_lunch, na.rm = TRUE) * 100, 1),
+    "% ELL" = round(mean(share_ELL, na.rm = TRUE) * 100, 1)
+  ) %>%
+  mutate(State = "Overall") %>%
+  select(State, everything())
+
+# Combine state-level and overall statistics
+final_table <- bind_rows(summary_stats, overall_stats)
+
+# Create the table using gt
+final_table %>%
+  gt() %>%
+  tab_header(
+    title = "Summary Statistics by State and Overall"
+  ) %>%
+  tab_spanner(
+    label = "Schooling Mode (%)",
+    columns = vars(`% in-person`, `% hybrid`, `% virtual`)
+  ) %>%
+  tab_spanner(
+    label = "Demographics (%)",
+    columns = vars(`% Black or Hispanic`, `% FRPL`, `% ELL`)
+  ) %>%
+  cols_label(
+    State = "State",  # Correct column name for State
+    Districts = "Number of Districts",  # Correct column name for Districts
+    `% in-person` = "% In-Person",
+    `% hybrid` = "% Hybrid",
+    `% virtual` = "% Virtual",
+    `% Black or Hispanic` = "% Black or Hispanic",
+    `% FRPL` = "% FRPL",
+    `% ELL` = "% ELL"
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(weight = "bold", color = "white"),
+      cell_fill(color = "#1E2A3D")
+    ),
+    locations = cells_title(groups = "title")
+  ) %>%
+  tab_style(
+    style = list(cell_borders(sides = "all", weight = px(2), color = "gray")),
+    locations = cells_body(columns = everything())
+  ) %>%
+  tab_options(
+    table.width = pct(80),
+    column_labels.font.weight = "bold",
+    table.font.size = 14
+    
+```
+
+Change in participation and pass rates by state (table)
+```{r}
+change_stats <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    # Change in Pass Rates
+    change_pass_math = round(mean(pass_math_2021, na.rm = TRUE) - mean(pass_math_2019, na.rm = TRUE), 2),
+    change_pass_ela = round(mean(pass_ela_2021, na.rm = TRUE) - mean(pass_ela_2019, na.rm = TRUE), 2),
+    change_pass_combined = round((mean(pass_math_2021, na.rm = TRUE) + mean(pass_ela_2021, na.rm = TRUE)) / 2 - 
+                                 (mean(pass_math_2019, na.rm = TRUE) + mean(pass_ela_2019, na.rm = TRUE)) / 2, 2),
+    
+    # Change in Participation Rates
+    change_participation_math = round(mean(participation_math_2021, na.rm = TRUE) - mean(participation_math_2019, na.rm = TRUE), 2),
+    change_participation_ela = round(mean(participation_ela_2021, na.rm = TRUE) - mean(participation_ela_2019, na.rm = TRUE), 2),
+    change_participation_combined = round((mean(participation_math_2021, na.rm = TRUE) + mean(participation_ela_2021, na.rm = TRUE)) / 2 - 
+                                          (mean(participation_math_2019, na.rm = TRUE) + mean(participation_ela_2019, na.rm = TRUE)) / 2, 2)
+  ) %>%
+  rename(State = state_id) %>%
+  mutate(State = case_when(
+    State == 1 ~ "CO",
+    State == 2 ~ "CT",
+    State == 3 ~ "MA",
+    State == 4 ~ "MN",
+    State == 5 ~ "MS",
+    State == 6 ~ "OH",
+    State == 7 ~ "RI",
+    State == 8 ~ "VA",
+    State == 9 ~ "WI",
+    State == 10 ~ "WV",
+    State == 11 ~ "WY"
+  )) %>%
+  select(State, everything()) %>%
+  arrange(State)
+
+# Create the table using gt
+change_stats %>%
+  gt() %>%
+  tab_header(
+    title = "Change in Pass Rate and Participation from 2019-2021 by State"
+  ) %>%
+  tab_spanner(
+    label = "Change in Pass Rates",
+    columns = vars(change_pass_math, change_pass_ela, change_pass_combined)
+  ) %>%
+  tab_spanner(
+    label = "Change in Participation Rates",
+    columns = vars(change_participation_math, change_participation_ela, change_participation_combined)
+  ) %>%
+  cols_label(
+    State = "State",
+    change_pass_math = "Change in Pass Rate (Math)",
+    change_pass_ela = "Change in Pass Rate (ELA)",
+    change_pass_combined = "Change in Pass Rate (Combined)",
+    change_participation_math = "Change in Participation (Math)",
+    change_participation_ela = "Change in Participation (ELA)",
+    change_participation_combined = "Change in Participation (Combined)"
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(weight = "bold", color = "white"),
+      cell_fill(color = "#1E2A3D")
+    ),
+    locations = cells_title(groups = "title")
+  ) %>%
+  tab_style(
+    style = list(cell_borders(sides = "all", weight = px(2), color = "gray")),
+    locations = cells_body(columns = everything())
+  ) %>%
+  tab_options(
+    table.width = pct(80),
+    column_labels.font.weight = "bold",
+    table.font.size = 14
+  )
+
+
+```
+
+
+Plot average change in pass rates by state
+```{r}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+
+# Read the data
+data <- read_excel("data/district_data.xlsx")
+
+# Summarize the data to calculate average change in pass rates
+change_in_pass_rates <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    avg_change_pass_math = round(mean(pass_math_2021, na.rm = TRUE) - mean(pass_math_2019, na.rm = TRUE), 2),
+    avg_change_pass_ela = round(mean(pass_ela_2021, na.rm = TRUE) - mean(pass_ela_2019, na.rm = TRUE), 2),
+    avg_change_pass_combined = round(
+      (mean(pass_math_2021, na.rm = TRUE) + mean(pass_ela_2021, na.rm = TRUE)) / 2 -
+      (mean(pass_math_2019, na.rm = TRUE) + mean(pass_ela_2019, na.rm = TRUE)) / 2, 2
+    )
+  ) %>%
+  rename(State = state_id) %>%
+  mutate(State = case_when(
+    State == 1 ~ "CO",
+    State == 2 ~ "CT",
+    State == 3 ~ "MA",
+    State == 4 ~ "MN",
+    State == 5 ~ "MS",
+    State == 6 ~ "OH",
+    State == 7 ~ "RI",
+    State == 8 ~ "VA",
+    State == 9 ~ "WI",
+    State == 10 ~ "WV",
+    State == 11 ~ "WY"
+  )) %>%
+  select(State, avg_change_pass_math, avg_change_pass_ela, avg_change_pass_combined) %>%
+  arrange(State)
+
+# Create the plot using ggplot2
+ggplot(change_in_pass_rates, aes(x = State, y = avg_change_pass_combined, fill = State)) +
+  geom_bar(stat = "identity") + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
+  labs(
+    title = "Average Change in Pass Rates (2019 to 2021) by State",
+    x = "State",
+    y = "Average Change in Pass Rates"
+  ) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(11, "Set3"))  # Add custom colors from RColorBrewer
+
+```
+
+Plot - change in pass rates by schooling mode and demographic factors
+```{r}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Read the data
+data <- read_excel("data/district_data.xlsx")
+
+# Calculate the change in pass rate by schooling mode and demographic factors
+change_in_pass_rate_details <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    change_pass_inperson = round(mean(pass_math_2021[share_inperson > 0], na.rm = TRUE) - 
+                                 mean(pass_math_2019[share_inperson > 0], na.rm = TRUE), 2),
+    change_pass_virtual = round(mean(pass_math_2021[share_virtual > 0], na.rm = TRUE) - 
+                                mean(pass_math_2019[share_virtual > 0], na.rm = TRUE), 2),
+    change_pass_hybrid = round(mean(pass_math_2021[share_hybrid > 0], na.rm = TRUE) - 
+                               mean(pass_math_2019[share_hybrid > 0], na.rm = TRUE), 2),
+    change_pass_black = round(mean(pass_math_2021[share_black > 0], na.rm = TRUE) - 
+                              mean(pass_math_2019[share_black > 0], na.rm = TRUE), 2),
+    change_pass_hisp = round(mean(pass_math_2021[share_hisp > 0], na.rm = TRUE) - 
+                             mean(pass_math_2019[share_hisp > 0], na.rm = TRUE), 2),
+    change_pass_frpl = round(mean(pass_math_2021[share_lunch > 0], na.rm = TRUE) - 
+                             mean(pass_math_2019[share_lunch > 0], na.rm = TRUE), 2),
+    change_pass_ell = round(mean(pass_math_2021[share_ELL > 0], na.rm = TRUE) - 
+                            mean(pass_math_2019[share_ELL > 0], na.rm = TRUE), 2)
+  ) %>%
+  rename(State = state_id) %>%
+  mutate(State = case_when(
+    State == 1 ~ "CO",
+    State == 2 ~ "CT",
+    State == 3 ~ "MA",
+    State == 4 ~ "MN",
+    State == 5 ~ "MS",
+    State == 6 ~ "OH",
+    State == 7 ~ "RI",
+    State == 8 ~ "VA",
+    State == 9 ~ "WI",
+    State == 10 ~ "WV",
+    State == 11 ~ "WY"
+  )) %>%
+  gather(key = "Category", value = "Change_in_Pass_Rate", 
+         change_pass_inperson, change_pass_virtual, change_pass_hybrid, 
+         change_pass_black, change_pass_hisp, change_pass_frpl, change_pass_ell) %>%
+  arrange(State)
+
+# Plot the data using ggplot2
+ggplot(change_in_pass_rate_details, aes(x = State, y = Change_in_Pass_Rate, fill = Category)) +
+  geom_bar(stat = "identity", position = "dodge") + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
+  labs(
+    title = "Change in Pass Rate by State and Category (2019-2021)",
+    x = "State",
+    y = "Change in Pass Rate"
+  ) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(7, "Set3")) +  # Add custom colors from RColorBrewer
+  theme(legend.title = element_blank())  # Remove legend title
+
+```
+```{r}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+# Read the data
+data <- read_excel("data/district_data.xlsx")
+
+# Calculate the overall change in pass rates across all states for each category
+overall_change_in_pass_rate <- data %>%
+  summarise(
+    avg_change_pass_inperson = round(mean(pass_math_2021[share_inperson > 0], na.rm = TRUE) - 
+                                     mean(pass_math_2019[share_inperson > 0], na.rm = TRUE), 2),
+    avg_change_pass_virtual = round(mean(pass_math_2021[share_virtual > 0], na.rm = TRUE) - 
+                                    mean(pass_math_2019[share_virtual > 0], na.rm = TRUE), 2),
+    avg_change_pass_hybrid = round(mean(pass_math_2021[share_hybrid > 0], na.rm = TRUE) - 
+                                   mean(pass_math_2019[share_hybrid > 0], na.rm = TRUE), 2),
+    avg_change_pass_black = round(mean(pass_math_2021[share_black > 0], na.rm = TRUE) - 
+                                  mean(pass_math_2019[share_black > 0], na.rm = TRUE), 2),
+    avg_change_pass_hisp = round(mean(pass_math_2021[share_hisp > 0], na.rm = TRUE) - 
+                                 mean(pass_math_2019[share_hisp > 0], na.rm = TRUE), 2),
+    avg_change_pass_frpl = round(mean(pass_math_2021[share_lunch > 0], na.rm = TRUE) - 
+                                 mean(pass_math_2019[share_lunch > 0], na.rm = TRUE), 2),
+    avg_change_pass_ell = round(mean(pass_math_2021[share_ELL > 0], na.rm = TRUE) - 
+                                mean(pass_math_2019[share_ELL > 0], na.rm = TRUE), 2)
+  )
+
+# Reshape the data into long format
+change_in_pass_rate_details <- overall_change_in_pass_rate %>%
+  gather(key = "Category", value = "Change_in_Pass_Rate", 
+         avg_change_pass_inperson, avg_change_pass_virtual, avg_change_pass_hybrid, 
+         avg_change_pass_black, avg_change_pass_hisp, avg_change_pass_frpl, avg_change_pass_ell) %>%
+  arrange(Category)
+
+# Plot the data using ggplot2
+ggplot(change_in_pass_rate_details, aes(x = Category, y = Change_in_Pass_Rate, fill = Category)) +
+  geom_bar(stat = "identity") + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
+  labs(
+    title = "Average Change in Pass Rates (2019 to 2021) - Overall Statistics",
+    x = "Category",
+    y = "Average Change in Pass Rate"
+  ) +
+  scale_fill_manual(values = RColorBrewer::brewer.pal(7, "Set3")) +  # Add custom colors from RColorBrewer
+  theme(legend.title = element_blank())  # Remove legend title
+
+```
+
+Plot showing change in pass rates with mode of schooling
+```{r}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+
+# Read the data
+data <- read_excel("data/district_data.xlsx")
+
+# Calculate the overall pass rate for each district (average of Math and ELA)
+data <- data %>%
+  mutate(
+    avg_pass_rate = (pass_math_2021 + pass_ela_2021) / 2  # Calculate the average pass rate
+  )
+
+# Create a scatter plot to show the relationship between in-person learning and pass rates
+ggplot(data, aes(x = share_inperson * 100, y = avg_pass_rate)) +  # scale in-person learning by 100 to get percentage
+  geom_point(aes(color = share_inperson), alpha = 0.7) +  # Plot points with color representing in-person share
+  geom_smooth(method = "lm", color = "blue", se = FALSE) +  # Add a linear regression line
+  theme_minimal() + 
+  labs(
+    title = "Pass Rate vs. Percentage of In-Person Learning",
+    x = "Percentage of In-Person Learning",
+    y = "Average Pass Rate (Math + ELA)",
+    caption = "Data Source: District-level Assessment Data"
+  ) +
+  scale_color_gradient(low = "red", high = "green") +  # Color points by share of in-person learning
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels if needed
+
+```
+
