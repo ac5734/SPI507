@@ -104,7 +104,8 @@ renamed_labels <- c(
   "int_virtual_hisp" = "% Hispanic x % virtual",
   "int_hybrid_hisp" = "% Hispanic x % hybrid",
   "int_virtual_lunch" = "% Lunch x % virtual",
-  "int_hybrid_lunch" = "% Lunch x % hybrid"
+  "int_hybrid_lunch" = "% Lunch x % hybrid",
+  "(Intercept)" = "Constant"
 )
 
 # Extra rows
