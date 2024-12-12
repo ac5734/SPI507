@@ -447,3 +447,44 @@ ggplot(state_data, aes(x = share_inperson * 100, y = change_pass_rate, label = s
 
 ```
 
+Scatterplot showing change in pass rate vs. percentage of hybrid and virtual learning by state
+```{r}
+# Create variable that is the sum of share hybrid and share virtual learning for each state
+state_share_hybrid_virtual <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    share_hybrid_virtual = mean(share_hybrid + share_virtual, na.rm = TRUE)
+  )
+
+# Merge the two datasets
+state_pass_rate_hybrid_virtual <- left_join(state_change_pass_rate, state_share_hybrid_virtual, by = "state_id")
+
+# Create descriptive labels for states
+state_labels <- data.frame(
+  state_id = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
+  state_name = c("CO", "CT", "MA", "MN", "MS", "OH", "RI", "VA", "WI", "WV", "WY")
+)
+
+# Merge the state labels with the state data
+state_pass_rate_hybrid_virtual <- left_join(state_pass_rate_hybrid_virtual, state_labels, by = "state_id")
+
+# Create scatterplot similar to above but showing change in pass rate vs. share hybrid/virtual learning by state
+ggplot(state_pass_rate_hybrid_virtual, aes(x = share_hybrid_virtual * 100, y = change_pass_rate, label = state_name)) +
+  geom_point(size = 3) +
+  geom_text_repel(
+    box.padding = 0.5,
+    point.padding = 0.5,
+    segment.color = "grey",
+    segment.size = 0.5
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Change in Pass Rate vs. Percentage of Hybrid/Virtual Learning by State",
+    x = "Percentage of Hybrid/Virtual Learning",
+    y = "Change in Pass Rate (2019 to 2021)"
+  ) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
