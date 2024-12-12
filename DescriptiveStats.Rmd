@@ -377,4 +377,73 @@ ggplot(data, aes(x = share_inperson * 100, y = avg_pass_rate)) +  # scale in-per
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels if needed
 
 ```
+Scatterplot visualizing change in test score by share in person, with state labels
+```{r}
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(ggrepel)
+
+# Read the data
+data <- read_excel("data/district_data.xlsx")
+
+# Create variable for average of math and english pass rates
+data <- data %>%
+  mutate(
+    avg_pass_rate_2019 = (pass_math_2019 + pass_ela_2019) / 2,
+    avg_pass_rate_2021 = (pass_math_2021 + pass_ela_2021) / 2
+  )
+
+# Calculate the change in pass rates from 2019 to 2021
+data <- data %>%
+  mutate(
+    change_pass_rate = avg_pass_rate_2021 - avg_pass_rate_2019
+  )
+
+# Create variable that is the change in average pass rate for each state
+state_change_pass_rate <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    change_pass_rate = mean(change_pass_rate, na.rm = TRUE))
+
+# Create variable that is the percentage of in-person learning for each state
+state_share_inperson <- data %>%
+  group_by(state_id) %>%
+  summarise(
+    share_inperson = mean(share_inperson, na.rm = TRUE)
+  )
+
+# Merge the two datasets
+state_data <- left_join(state_change_pass_rate, state_share_inperson, by = "state_id")
+view(state_data)
+
+# Create descriptive labels for states
+state_labels <- data.frame(
+  state_id = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11),
+  state_name = c("CO", "CT", "MA", "MN", "MS", "OH", "RI", "VA", "WI", "WV", "WY")
+)
+
+# Merge the state labels with the state data
+state_data <- left_join(state_data, state_labels, by = "state_id")
+print(state_data)
+
+# Create scatterplot showing change in pass rate by share in-person learning with state labels
+ggplot(state_data, aes(x = share_inperson * 100, y = change_pass_rate, label = state_name)) +
+  geom_point(size = 3) +
+  geom_text_repel(
+    box.padding = 0.5,
+    point.padding = 0.5,
+    segment.color = "grey",
+    segment.size = 0.5
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Change in Pass Rate vs. Percentage of In-Person Learning by State",
+    x = "Percentage of In-Person Learning",
+    y = "Change in Pass Rate (2019 to 2021)"
+  ) +
+  theme(legend.position = "none", axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
 
